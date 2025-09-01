@@ -1,19 +1,20 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:hyip/ui/screens/forget_password_verify_email_screen.dart';
+import 'package:hyip/ui/screens/forget_password_pin_verification_screen.dart';
 import 'package:hyip/ui/screens/register_screen.dart';
 import 'package:hyip/ui/widgets/screen_background.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class ForgetPasswordVerifyEmailScreen extends StatefulWidget {
+  const ForgetPasswordVerifyEmailScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<ForgetPasswordVerifyEmailScreen> createState() =>
+      _ForgetPasswordVerifyEmailScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _ForgetPasswordVerifyEmailScreenState
+    extends State<ForgetPasswordVerifyEmailScreen> {
   final TextEditingController _emailTEController = TextEditingController();
-  final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   @override
@@ -29,8 +30,15 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 SizedBox(height: 80),
                 Text(
-                  'Get Started With',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                  'Your Email Address',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'A 6 digit verification pin will be sent to your email',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Colors.grey
+                  ),
                 ),
                 SizedBox(height: 24),
                 TextFormField(
@@ -39,14 +47,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: _emailTEController,
                   decoration: InputDecoration(hintText: 'Email'),
                 ),
-                SizedBox(height: 24),
-                TextFormField(
-                  controller: _passwordTEController,
-                  decoration: InputDecoration(hintText: 'Password'),
-                ),
+
                 SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: _onTapSubmitButton,
                   child: Icon(Icons.arrow_circle_right_rounded),
                   style: ElevatedButton.styleFrom(
                     fixedSize: const Size.fromWidth(double.maxFinite),
@@ -61,10 +65,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 Center(
                   child: Column(
                     children: [
-                      TextButton(
-                        onPressed: _onTapForgetPasswordInButton,
-                        child: Text('Forget Password?'),
-                      ),
                       RichText(
                         text: TextSpan(
                           style: TextStyle(
@@ -73,9 +73,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             fontSize: 14,
                           ),
                           children: [
-                            TextSpan(text: "Don't have account? "),
+                            TextSpan(text: "have account? "),
                             TextSpan(
-                              text: "Sign Up",
+                              text: "Sign In",
                               style: TextStyle(
                                 color: Colors.green,
                                 fontWeight: FontWeight.bold,
@@ -97,23 +97,17 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _onTapForgetPasswordInButton() {
-    Navigator.push(context, 
-    MaterialPageRoute(builder: (context)=> const ForgetPasswordVerifyEmailScreen())
-    );
+  void _onTapSubmitButton() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const ForgetPasswordPinVerificationScreen()));
   }
   void _onTapSignUpButton() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const RegisterScreen()),
-    );
+    Navigator.pop(context);
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     _emailTEController.dispose();
-    _passwordTEController.dispose();
     super.dispose();
   }
 }

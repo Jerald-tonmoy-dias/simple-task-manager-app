@@ -18,6 +18,9 @@ class TaskManagerApp extends StatelessWidget {
           enabledBorder: _getZeroBorder(),
           errorBorder: _getZeroBorder()
         ),
+          textTheme: const TextTheme(
+            titleLarge: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+          )
       ),
       home: SplashScreen(),
     );
