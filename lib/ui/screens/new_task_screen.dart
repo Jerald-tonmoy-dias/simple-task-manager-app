@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hyip/ui/screens/add_new_task_screen.dart';
 import 'package:hyip/ui/widgets/TaskCard.dart';
 
 import '../widgets/SummaryCard.dart';
@@ -31,10 +32,14 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: _onTapAddNewTask,
         child: Icon(Icons.add),
       ),
     );
+  }
+  
+  void _onTapAddNewTask() {
+    Navigator.push(context,MaterialPageRoute(builder: (context)=> const AddNewTaskScreen()));
   }
 
   Widget buildSummarySection() {
