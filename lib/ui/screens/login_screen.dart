@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hyip/ui/screens/forget_password_verify_email_screen.dart';
+import 'package:hyip/ui/screens/main_bottom_nav_screen.dart';
 import 'package:hyip/ui/screens/register_screen.dart';
 import 'package:hyip/ui/widgets/screen_background.dart';
 
@@ -46,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: _onTapSignInButton,
                   child: Icon(Icons.arrow_circle_right_rounded),
                   style: ElevatedButton.styleFrom(
                     fixedSize: const Size.fromWidth(double.maxFinite),
@@ -97,11 +98,23 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _onTapForgetPasswordInButton() {
-    Navigator.push(context, 
-    MaterialPageRoute(builder: (context)=> const ForgetPasswordVerifyEmailScreen())
+  void _onTapSignInButton() {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const MainBottomNavScreen()),
+      (pre) => false,
     );
   }
+
+  void _onTapForgetPasswordInButton() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ForgetPasswordVerifyEmailScreen(),
+      ),
+    );
+  }
+
   void _onTapSignUpButton() {
     Navigator.push(
       context,
