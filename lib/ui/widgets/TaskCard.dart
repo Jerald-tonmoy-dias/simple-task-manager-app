@@ -1,9 +1,27 @@
 import 'package:flutter/material.dart';
 
+enum TaskStatus { sNew, progress, completed, canceled }
+
 class TaskCard extends StatelessWidget {
-  const TaskCard({
-    super.key,
-  });
+  const TaskCard({super.key, required this.taskStatus});
+
+  final TaskStatus taskStatus;
+
+  Color _getStatusChipColor() {
+    late Color color;
+    switch (taskStatus) {
+      case TaskStatus.sNew:
+        color = Colors.blue;
+      case TaskStatus.progress:
+        color = Colors.purple;
+      case TaskStatus.completed:
+        color = Colors.green;
+      case TaskStatus.canceled:
+        color = Colors.red;
+    }
+
+    return color;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +43,8 @@ class TaskCard extends StatelessWidget {
             Row(
               children: [
                 Chip(
-                  label: Text(
-                    'New',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  backgroundColor: Colors.blue,
+                  label: Text('New', style: TextStyle(color: Colors.white)),
+                  backgroundColor: _getStatusChipColor(),
                   side: BorderSide.none,
                   padding: EdgeInsets.symmetric(horizontal: 8),
                   shape: RoundedRectangleBorder(
