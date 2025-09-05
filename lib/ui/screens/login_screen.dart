@@ -1,9 +1,15 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hyip/ui/screens/forget_password_verify_email_screen.dart';
 import 'package:hyip/ui/screens/main_bottom_nav_screen.dart';
 import 'package:hyip/ui/screens/register_screen.dart';
+import 'package:hyip/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:hyip/ui/widgets/screen_background.dart';
+
+import '../data/service/network_client.dart';
+import '../data/utils/urls.dart';
+import '../widgets/snack_bar_message.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  bool _registtrationInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -39,22 +46,40 @@ class _LoginScreenState extends State<LoginScreen> {
                   keyboardType: TextInputType.emailAddress,
                   controller: _emailTEController,
                   decoration: InputDecoration(hintText: 'Email'),
+                  validator: (String? value) {
+                    String email = value?.trim() ?? '';
+                    if (EmailValidator.validate(email) == false) {
+                      return 'Enter a valid email';
+                    }
+                    return null;
+                  },
                 ),
                 SizedBox(height: 24),
                 TextFormField(
                   controller: _passwordTEController,
                   decoration: InputDecoration(hintText: 'Password'),
+                  validator: (String? value) {
+                    if ((value?.trim().isEmpty ?? true) ||
+                        (value!.length < 6)) {
+                      return 'Enter your Password more than 6 letters';
+                    }
+                    return null;
+                  },
                 ),
                 SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: _onTapSignInButton,
-                  child: Icon(Icons.arrow_circle_right_rounded),
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: const Size.fromWidth(double.maxFinite),
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                Visibility(
+                  visible: _registtrationInProgress == false,
+                  replacement: const CenteredCircularProgressIndicator(),
+                  child: ElevatedButton(
+                    onPressed: _onTapSignInButton,
+                    child: Icon(Icons.arrow_circle_right_rounded),
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: const Size.fromWidth(double.maxFinite),
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                 ),
@@ -99,11 +124,43 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onTapSignInButton() {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const MainBottomNavScreen()),
-      (pre) => false,
+    if (_formkey.currentState!.validate()) {
+      _loginUser();
+    }
+  }
+
+  Future<void> _loginUser() async {
+    setState(() {
+      _registtrationInProgress = true;
+    });
+
+    Map<String, dynamic> requestBody = {
+      "email": _emailTEController.text.trim(),
+      "password": _passwordTEController.text,
+    };
+
+    NetworkResponse response = await NetworkClient.postRequest(
+      url: Urls.loginUrl,
+      body: requestBody,
     );
+    setState(() {
+      _registtrationInProgress = false;
+    });
+    if (response.isSuccess) {
+      _clearTextFields();
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const MainBottomNavScreen()),
+        (pre) => false,
+      );
+    } else {
+      showSnackBarMessage(context, response.errorMessage, true);
+    }
+  }
+
+  void _clearTextFields() {
+    _emailTEController.clear();
+    _passwordTEController.clear();
   }
 
   void _onTapForgetPasswordInButton() {

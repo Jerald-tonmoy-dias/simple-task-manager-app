@@ -6,6 +6,8 @@ import 'package:hyip/ui/data/utils/urls.dart';
 import 'package:hyip/ui/widgets/screen_background.dart';
 import 'package:hyip/ui/widgets/snack_bar_message.dart';
 
+import '../widgets/centered_circular_progress_indicator.dart';
+
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -109,9 +111,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   SizedBox(height: 16),
                   Visibility(
                     visible: _registtrationInProgress == false,
-                    replacement: const Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                    replacement: const CenteredCircularProgressIndicator(),
                     child: ElevatedButton(
                       onPressed: _onTapSubmitButton,
                       child: Icon(Icons.arrow_circle_right_rounded),
