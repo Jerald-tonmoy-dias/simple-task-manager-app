@@ -1,12 +1,14 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:hyip/ui/data/models/login_model.dart';
 import 'package:hyip/ui/screens/forget_password_verify_email_screen.dart';
 import 'package:hyip/ui/screens/main_bottom_nav_screen.dart';
 import 'package:hyip/ui/screens/register_screen.dart';
 import 'package:hyip/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:hyip/ui/widgets/screen_background.dart';
 
+import '../controllers/auth_controller.dart';
 import '../data/service/network_client.dart';
 import '../data/utils/urls.dart';
 import '../widgets/snack_bar_message.dart';
@@ -147,6 +149,12 @@ class _LoginScreenState extends State<LoginScreen> {
       _registtrationInProgress = false;
     });
     if (response.isSuccess) {
+      LoginModel loginModel = LoginModel.fromJson(response.data!);
+      AuthController.saveUserInformation(
+        loginModel.token,
+        loginModel.userModel,
+      );
+
       _clearTextFields();
       Navigator.pushAndRemoveUntil(
         context,

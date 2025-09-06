@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hyip/ui/controllers/auth_controller.dart';
+import 'package:hyip/ui/screens/login_screen.dart';
 import 'package:hyip/ui/screens/update_profile_screen.dart';
 
 class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -7,7 +9,19 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool? fromProfileScreen;
 
   void _onTapProfileSection(BuildContext context) {
-    Navigator.push(context,MaterialPageRoute(builder: (context)=> const UpdateProfileScreen()));
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const UpdateProfileScreen()),
+    );
+  }
+
+ Future<void> _onTapLogoutButton(BuildContext context) async{
+    await AuthController.clearUserData();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+      (predicate) => false,
+    );
   }
 
   @override
@@ -17,11 +31,10 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.green,
       title: GestureDetector(
         onTap: () {
-          if(fromProfileScreen ?? false) {
+          if (fromProfileScreen ?? false) {
             return;
           }
           _onTapProfileSection(context);
-
         },
         child: Row(
           children: [
@@ -32,17 +45,20 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Rahim hasan',
+                    AuthController.userModel?.fulName ?? '',
                     style: textTheme.bodyLarge?.copyWith(color: Colors.white),
                   ),
                   Text(
-                    'rahasan@gmail.com',
+                    AuthController.userModel?.email ?? 'Unknown',
                     style: textTheme.bodySmall?.copyWith(color: Colors.white),
                   ),
                 ],
               ),
             ),
-            IconButton(onPressed: () {}, icon: Icon(Icons.logout)),
+            IconButton(
+              onPressed: () => _onTapLogoutButton(context),
+              icon: Icon(Icons.logout),
+            ),
           ],
         ),
       ),
